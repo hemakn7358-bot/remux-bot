@@ -39,7 +39,6 @@ async def start(client, message):
         reply_markup=buttons
     )
 
-
 # ---------------- AI SELECTION ---------------- #
 
 @app.on_callback_query()
@@ -54,27 +53,28 @@ async def choose_ai(client, query):
         f"✅ {mode.upper()} mode activated.\n\nYou can now chat normally."
     )
 
-
 # ---------------- AI CHAT ---------------- #
 
 @app.on_message(filters.text & ~filters.command)
 async def ai_chat(client, message):
 
-    user_id = message.from_user.id
+    try:
+        user_id = message.from_user.id
+        mode = user_mode.get(user_id)
 
-    mode = user_mode.get(user_id)
+        if not mode:
+            return await message.reply_text(
+                "Please select an AI first using /start"
+            )
 
-    if not mode:
-        return await message.reply_text(
-            "Please select an AI first using /start"
-        )
+        user_text = message.text
 
-    user_text = message.text
+        # placeholder reply
+        reply = f"AI MODE: {mode}\n\nYou said:\n{user_text}"
 
-    # placeholder reply (AI will be added next)
-    reply = f"AI MODE: {mode}\n\nYou said:\n{user_text}"
+        await message.reply_text(reply)
 
-    await message.reply_text(reply)
-
+    except Exception as e:
+        await message.reply_text(f"Error: {e}")
 
 app.run()
