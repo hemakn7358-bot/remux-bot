@@ -112,7 +112,7 @@ async def gemini(prompt):
 
 # ---------- AI CHAT ---------- #
 
-@app.on_message(filters.text & ~filters.command())
+@app.on_message(filters.text & ~filters.command)
 async def ai_chat(client, message):
 
     user_id = message.from_user.id
